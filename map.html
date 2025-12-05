@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Map - WEBGIS</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet Locate Control CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html"><i class="fas fa-shield-alt me-2"></i>Security WEBGIS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="map.html">Map Monitor</a></li>
+                    <li class="nav-item"><a class="nav-link" href="table.html">Data Records</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Map Container -->
+    <div class="container-fluid p-0">
+        <div id="map"></div>
+    </div>
+
+    <!-- Info Panel / Legend (Optional) -->
+    <div class="container mt-3">
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Active WMS Layer:</strong> High Danger Zones (Source: Geoserver)
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet Locate Control JS -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+
+    <script>
+        // Initialize Map
+        // Default center: Jakarta (as per sample data)
+        var map = L.map('map').setView([-6.200000, 106.816666], 13);
+
+        // Base Layer (OSM)
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Geoserver WMS Layer
+        // IMPORTANT: Replace 'workspace:layer_name' with your actual Geoserver layer
+        var wmsLayer = L.tileLayer.wms('http://localhost:8080/geoserver/wms', {
+            layers: 'security:dangerous_areas',
+            format: 'image/png',
+            transparent: true,
+            version: '1.1.0',
+            attribution: 'Geoserver Security Data'
+        });
+
+        // Layer Control
+        var baseMaps = {
+            "OpenStreetMap": osm
+        };
+        var overlayMaps = {
+            "Dangerous Areas (WMS)": wmsLayer
+        };
+
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        // Load WMS by default
+        wmsLayer.addTo(map);
+
+        // Add Locate Control (Plugin)
+        L.control.locate({
+            position: 'topleft',
+            strings: {
+                title: "Show me where I am"
+            }
+        }).addTo(map);
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+:root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --dark-bg: #121212;
+    --dark-surface: #1e1e1e;
+    --text-color: #e0e0e0;
+    --accent-color: #00ff88;
+    /* Neon Green for security/safe vibes or alerts */
+    --danger-color: #ff3333;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    background-color: var(--dark-surface) !important;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: var(--text-color) !important;
+}
+
+.card {
+    background-color: var(--dark-surface);
+    border: 1px solid #333;
+    color: var(--text-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    color: #000;
+    font-weight: bold;
+}
+
+.hero-section {
+    padding: 100px 0;
+    text-align: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../assets/img/hero-bg.png');
+    /* Placeholder if valid */
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+/* Map specific */
+#map {
+    height: 600px;
+    width: 100%;
+    border: 2px solid var(--secondary-color);
+}
+
+/* Table specific */
+.table-dark {
+    --bs-table-bg: var(--dark-surface);
+    --bs-table-striped-bg: #2c2c2c;
+}

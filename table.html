@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Records - Security WEBGIS</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html"><i class="fas fa-shield-alt me-2"></i>Security WEBGIS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="map.html">Map Monitor</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="table.html">Data Records</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">Recorded Dangerous Incidents</h2>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped table-hover border">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Area Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Coordinates</th>
+                        <th scope="col">Severity</th>
+                        <th scope="col">Reported At</th>
+                    </tr>
+                </thead>
+                <tbody id="data-body">
+                    <!-- Data will be inserted here via JS -->
+                    <tr>
+                        <td colspan="6" class="text-center">Loading data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('api/get_data.php')
+                .then(response => response.json())
+                .then(result => {
+                    const tbody = document.getElementById('data-body');
+                    tbody.innerHTML = ''; // Clear loading
+
+                    if (result.status === 'success' && result.data.length > 0) {
+                        result.data.forEach((row, index) => {
+                            const tr = document.createElement('tr');
+
+                            // Severity Badge Logic
+                            let badgeClass = 'bg-secondary';
+                            if (row.severity === 'High') badgeClass = 'bg-danger';
+                            if (row.severity === 'Medium') badgeClass = 'bg-warning text-dark';
+                            if (row.severity === 'Low') badgeClass = 'bg-success';
+                            if (row.severity === 'Critical') badgeClass = 'bg-dark border border-danger text-danger';
+
+                            tr.innerHTML = `
+                                <th scope="row">${index + 1}</th>
+                                <td>${row.name}</td>
+                                <td>${row.description}</td>
+                                <td>${row.latitude}, ${row.longitude}</td>
+                                <td><span class="badge ${badgeClass}">${row.severity}</span></td>
+                                <td>${row.created_at}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center">No records found.</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('data-body').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading data. Ensure Database is connected.</td></tr>';
+                });
+        });
+    </script>
+</body>
+
+</html>
